@@ -28,6 +28,8 @@ function init() {
 
   saveButton.addEventListener("click", sendMessage);
   loadButton.addEventListener("click", loadMessages);
+
+  db.collection(collectionName).onSnapshot(loadMessages);
 }
 
 function sendMessage()
@@ -47,13 +49,12 @@ function sendMessage()
     .then((docRef) => {console.log("Document written with ID: ", docRef.id);})
     .catch((error) => {console.error("Error adding document: ", error);});
 
-  loadMessages();
+  //loadMessages();
   form.value = "";
 }
 
 function loadMessages()
 {
-  var messageArray = new Array();
   console.log("Loading messages");
   textBox.innerHTML = "";
   db.collection(collectionName).get().then((querySnapshot) => {
