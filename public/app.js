@@ -1,15 +1,14 @@
 
 var db;
-var saveButton;
+var sendButton;
 var loadButton;
 var textBox;
 const collectionName = "messages";
 
 init();
-loadMessages();
 function init() {
 
-  saveButton = document.querySelector("#saveButton");
+  sendButton = document.querySelector("#saveButton");
   loadButton = document.querySelector("#loadButton");
   textBox = document.querySelector("#textBox");
 
@@ -26,7 +25,7 @@ function init() {
 
   db = firebase.firestore();
 
-  saveButton.addEventListener("click", sendMessage);
+  sendButton.addEventListener("click", sendMessage);
   loadButton.addEventListener("click", loadMessages);
 
   db.collection(collectionName).onSnapshot(loadMessages);
@@ -42,14 +41,13 @@ function sendMessage()
     return;
 
   const messageObject = {
-    contents: message
+    contents: sanitizeString(message)
   }
 
-  db.collection(collectionName).add(messageObject)
+  db.collection(collectionName).doc(getId()).set(messageObject)
     .then((docRef) => {console.log("Document written with ID: ", docRef.id);})
     .catch((error) => {console.error("Error adding document: ", error);});
 
-  //loadMessages();
   form.value = "";
 }
 
@@ -66,4 +64,19 @@ function loadMessages()
   
   
   
+}
+
+function getId()
+{
+  var snowflake = 0;
+
+  snowflake = new Date().getTime();
+
+  return snowflake.toString();
+}
+
+function sanitizeString(str)
+{
+  str = str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim,"");
+  return str.trim();
 }
