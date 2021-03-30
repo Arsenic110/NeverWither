@@ -70,6 +70,7 @@ function loadMessages()
     querySnapshot.forEach((doc) => {
       textBox.innerHTML += "<p>" +doc.data().name + " > " + doc.data().contents + "</p>";
     });
+    window.scrollTo(0,document.body.scrollHeight);
 });
   
   
