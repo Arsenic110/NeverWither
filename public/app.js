@@ -4,12 +4,13 @@ var sendButton;
 var loadButton;
 var textBox;
 var inputBox;
-
+var socket;
 var username;
 
 const collectionName = "messages";
 
 init();
+
 function init() 
 {
   sendButton = document.querySelector("#saveButton");
@@ -38,6 +39,8 @@ function init()
   db.collection(collectionName).onSnapshot(loadMessages);
 
   document.querySelector("#nameInput").addEventListener("keyup", function(e){if (e.keyCode === 13) {e.preventDefault(); setName();}});
+
+  socket = io.connect("http://192.168.1.69:5999");
 }
 
 function sendMessage()
@@ -53,9 +56,11 @@ function sendMessage()
     contents: sanitizeString(message)
   }
 
-  db.collection(collectionName).doc(getId()).set(messageObject)
-    .then((docRef) => {console.log("Document written with ID: ", docRef.id);})
-    .catch((error) => {console.error("Error adding document: ", error);});
+  socket.emit("sendMessage", messageObject);
+
+  // db.collection(collectionName).doc(getId()).set(messageObject)
+  //   .then((docRef) => {console.log("Document written with ID: ", docRef.id);})
+  //   .catch((error) => {console.error("Error adding document: ", error);});
 
   form.value = "";
 }
