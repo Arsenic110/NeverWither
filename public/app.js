@@ -12,7 +12,6 @@ const collectionName = "messages";
 init();
 function init() 
 {
-
   sendButton = document.querySelector("#saveButton");
   loadButton = document.querySelector("#loadButton");
   textBox = document.querySelector("#textBox");
@@ -43,7 +42,6 @@ function init()
 
 function sendMessage()
 {
-  console.log('Clicked!');
   let form = document.querySelector("#chat-input-box");
   let message = form.value;
 
@@ -64,17 +62,14 @@ function sendMessage()
 
 function loadMessages()
 {
-  console.log("Loading messages");
   textBox.innerHTML = "";
-  db.collection(collectionName).get().then((querySnapshot) => {
+  db.collection(collectionName).get().then((querySnapshot) => 
+  {
     querySnapshot.forEach((doc) => {
-      textBox.innerHTML += "<p>" +doc.data().name + " > " + doc.data().contents + "</p>";
+      textBox.innerHTML += "<p>" + doc.data().name + " > " + doc.data().contents + "</p>";
     });
     window.scrollTo(0,document.body.scrollHeight);
-});
-  
-  
-  
+  });
 }
 
 function getId()
