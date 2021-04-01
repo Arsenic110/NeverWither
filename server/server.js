@@ -1,32 +1,24 @@
 const http = require("http");
 const fs = require("fs").promises;
 const express = require("express");
-const socket = require("socket.io");
+const socketio = require("socket.io");
 
 const hostname = "192.168.1.69";
 const port = 5999;
 
-var app;
-var server;
-var io;
+const app = express();
+const server = http.createServer(app);
+const io = socketio(server);
 
 init();
 
 function init()
 {
-    app = express();
-
-    //server listen on port
-    server = app.listen(port, hostname, () => 
-    {
-        console.log(`Server running at http://${hostname}:${port}/`);
-    });
-
+    app.use(express.static(__dirname + "/../public"));
     app.use(requestListener);
-    io = socket(server);
-
-    io.sockets.on("connection", function(Socket)
-    {
+    
+     io.on("connection", function(Socket)
+     {
         console.log("SocketIO: New Connection: " + Socket.id);
         Socket.on("sendMessage", function(data)
         {
@@ -35,14 +27,19 @@ function init()
         });
     });
 
+    //server listen on port
+    server.listen(port, hostname, () => 
+    {
+        console.log(`Server running at http://${hostname}:${port}/`);
+    });
+
 }
 
 function requestListener(req, res)
 {
     var furl = translateUrl(req.url);
 
-
-    console.log(req.url);
+    //console.log(req.url);
     fs.readFile(__dirname + "/.." + furl).then((contents) =>
     {
         //header for content type
