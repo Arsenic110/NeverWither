@@ -2,6 +2,8 @@ const http = require("http");
 const fs = require("fs").promises;
 const express = require("express");
 const socketio = require("socket.io");
+const admin = require("firebase-admin");
+
 
 const hostname = "192.168.1.69";
 const port = 5999;
@@ -10,13 +12,26 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
+var firebaseConfig = 
+  {
+    apiKey: "AIzaSyAoUxicyEX04HLnW1KLNEYR8ME4eXYyAzE",
+    authDomain: "never-wither.firebaseapp.com",
+    projectId: "never-wither",
+    storageBucket: "never-wither.appspot.com",
+    messagingSenderId: "417332238885",
+    appId: "1:417332238885:web:5dba3170bec5690a5dbdcc",
+    measurementId: "G-XX5LXVK91D"
+  };
+
+const db = admin.initializeApp(firebaseConfig).firestore();
+
 init();
 
 function init()
 {
     app.use(express.static(__dirname + "/../public"));
     app.use(requestListener);
-    
+
      io.on("connection", function(Socket)
      {
         console.log("SocketIO: New Connection: " + Socket.id);
@@ -31,6 +46,14 @@ function init()
     server.listen(port, hostname, () => 
     {
         console.log(`Server running at http://${hostname}:${port}/`);
+    });
+
+
+    db.collection("messages").get().then((querySnapshot) => 
+     {
+      querySnapshot.forEach((doc) => {
+        console.log(doc.data().name + " > " + doc.data().contents);
+      });
     });
 
 }

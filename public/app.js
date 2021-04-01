@@ -18,25 +18,12 @@ function init()
   textBox = document.querySelector("#textBox");
   inputBox = document.querySelector("#chat-input-box");
 
-  var firebaseConfig = 
-  {
-    apiKey: "AIzaSyAoUxicyEX04HLnW1KLNEYR8ME4eXYyAzE",
-    authDomain: "never-wither.firebaseapp.com",
-    projectId: "never-wither",
-    storageBucket: "never-wither.appspot.com",
-    messagingSenderId: "417332238885",
-    appId: "1:417332238885:web:5dba3170bec5690a5dbdcc",
-    measurementId: "G-XX5LXVK91D"
-  };
-  firebase.initializeApp(firebaseConfig);
-
-  db = firebase.firestore();
 
   sendButton.addEventListener("click", sendMessage);
   loadButton.addEventListener("click", loadMessages);
   inputBox.addEventListener("keyup", function(e){if (e.keyCode === 13) {e.preventDefault(); sendButton.click();}});
 
-  db.collection(collectionName).onSnapshot(loadMessages);
+  //db.collection(collectionName).onSnapshot(loadMessages);
 
   document.querySelector("#nameInput").addEventListener("keyup", function(e){if (e.keyCode === 13) {e.preventDefault(); setName();}});
 
@@ -67,14 +54,20 @@ function sendMessage()
 
 function loadMessages()
 {
-  textBox.innerHTML = "";
-  db.collection(collectionName).get().then((querySnapshot) => 
-  {
-    querySnapshot.forEach((doc) => {
-      textBox.innerHTML += "<p>" + doc.data().name + " > " + doc.data().contents + "</p>";
-    });
-    window.scrollTo(0,document.body.scrollHeight);
-  });
+  // textBox.innerHTML = "";
+  // db.collection(collectionName).get().then((querySnapshot) => 
+  // {
+  //   querySnapshot.forEach((doc) => {
+  //     textBox.innerHTML += "<p>" + doc.data().name + " > " + doc.data().contents + "</p>";
+  //   });
+  //   window.scrollTo(0,document.body.scrollHeight);
+  // });
+  socket.emit("loadMessages");
+}
+
+function loadMessagesBefore()
+{
+  socket.emit("loadMessagesBefore");
 }
 
 function getId()
