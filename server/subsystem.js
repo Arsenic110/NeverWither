@@ -1,1 +1,2 @@
-"use strict";
+const users = require("./userModel");
+
