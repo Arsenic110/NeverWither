@@ -18,6 +18,7 @@ function init()
   textBox = document.querySelector("#textBox");
   inputBox = document.querySelector("#chat-input-box");
 
+  
 
   sendButton.addEventListener("click", sendMessage);
   loadButton.addEventListener("click", loadMessages);

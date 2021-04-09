@@ -2,13 +2,19 @@ const http = require("http");
 const fs = require("fs").promises;
 const express = require("express");
 const socketio = require("socket.io");
+const mongodb = require("mongodb");
 
-const hostname = "192.168.1.69";
-const port = 5999;
+const config = require("./server-config.json");
+
+const hostname = config.hostname;
+const port = config.port;
 
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
+
+//Make sure to add the class name to simplify syntax.
+//const Subsystem = require("./subsystem").Subsystem;
 
 init();
 
@@ -29,6 +35,9 @@ function init()
     {
         console.log(`Server running at http://${hostname}:${port}/`);
     });
+
+
+    mongo();
 }
 
 function requestListener(req, res)
@@ -73,8 +82,22 @@ function registerSockets(Socket)
         //TODO: Implement Database + Client Echo
         console.log(`${data.name} > ${data.contents}`);
 
-
     });
 
+
+}
+
+function mongo()
+{
+    var mongoClient = mongodb.MongoClient;
+    var url = "mongodb://192.168.1.42:5998/";
+    var db = "master";
+
+    mongoClient.connect(url + db, (err, db) =>
+    {
+        if(err) throw err;
+        else console.log("MongoDB: Success!");
+        db.close();
+    });
 
 }
