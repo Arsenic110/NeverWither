@@ -3,12 +3,16 @@ const fs = require("fs").promises;
 const express = require("express");
 const socketio = require("socket.io");
 const mongodb = require("mongodb");
+const config = require("./config");
 
-const config = require("./server-config.json");
+//const mongoClient = mongodb.MongoClient;
+//const mongodbUrl = config.database.hostname;
+//const mongoose = require("mongoose");
 
-const hostname = config.hostname;
-const port = config.port;
+const database = require("./database");
 
+const hostname = config.http.hostname;
+const port = config.http.port;
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
@@ -35,9 +39,6 @@ function init()
     {
         console.log(`Server running at http://${hostname}:${port}/`);
     });
-
-
-    mongo();
 }
 
 function requestListener(req, res)
@@ -80,24 +81,39 @@ function registerSockets(Socket)
     Socket.on("sendMessage", (data) =>
     {
         //TODO: Implement Database + Client Echo
-        console.log(`${data.name} > ${data.contents}`);
+        console.log(`Client sent: ${data.author} > ${data.contents}`);
 
+        database.createMessage(data.contents, data.author);
+
+        io.emit("newMessage", `${data.author} > ${data.contents}`);
     });
 
-
-}
-
-function mongo()
-{
-    var mongoClient = mongodb.MongoClient;
-    var url = "mongodb://192.168.1.42:5998/";
-    var db = "master";
-
-    mongoClient.connect(url + db, (err, db) =>
+    Socket.on("readAll", () =>
     {
-        if(err) throw err;
-        else console.log("MongoDB: Success!");
-        db.close();
+        database.readMessages((err, m) => 
+        {
+            if(err) throw err;
+            var mArr = [];
+            //console.log(m.length + " " + typeof(m));
+
+            m = m.reverse();
+
+            for (var i = 0; i < m.length; i++)
+            {
+                //console.log("Inside the loop but no worky: " + i);
+                //console.log(`Pushing ${m[i].author} > ${m[i].contents}`);
+                mArr.push(`${m[i].author} > ${m[i].contents}`);
+            }
+
+            Socket.emit("readAll", mArr);
+        });
     });
 
+
 }
+
+//for future exports
+module.exports = 
+{
+
+};

@@ -21,7 +21,7 @@ function init()
   
 
   sendButton.addEventListener("click", sendMessage);
-  loadButton.addEventListener("click", loadMessages);
+  loadButton.addEventListener("click", () => {socket.emit("readAll")});
   inputBox.addEventListener("keyup", function(e){if (e.keyCode === 13) {e.preventDefault(); sendButton.click();}});
 
   //db.collection(collectionName).onSnapshot(loadMessages);
@@ -30,7 +30,13 @@ function init()
   //document.querySelector("#nameInput").addEventListener("keyup", function(e){if (e.keyCode === 13) {e.preventDefault(); setName();}});
 
 
-  socket = io.connect("http://192.168.1.69:5999");
+  socket = io.connect(window.location.href);
+  socket.emit("readAll");
+
+
+  socket.on("newMessage", loadMessage);
+  socket.on("readAll", loadMessages);
+
 }
 
 function sendMessage()
@@ -42,7 +48,7 @@ function sendMessage()
     return;
 
   const messageObject = {
-    name: username,
+    author: username,
     contents: sanitizeString(message)
   }
 
@@ -51,17 +57,35 @@ function sendMessage()
   form.value = "";
 }
 
-function loadMessages()
+function sendMessageTest(msg)
 {
-  // textBox.innerHTML = "";
-  // db.collection(collectionName).get().then((querySnapshot) => 
-  // {
-  //   querySnapshot.forEach((doc) => {
-  //     textBox.innerHTML += "<p>" + doc.data().name + " > " + doc.data().contents + "</p>";
-  //   });
-  //   window.scrollTo(0,document.body.scrollHeight);
-  // });
-  socket.emit("loadMessages");
+  socket.emit("sendMessage", { author:username, contents: msg});
+}
+
+function loadMessage(doc)
+{
+  //textBox.innerHTML = "";
+ 
+  textBox.innerHTML += "<p>" + doc + "</p>";
+  window.scrollTo(0, document.body.scrollHeight);
+
+  //socket.emit("loadMessages");
+}
+
+function loadMessages(docarr)
+{
+  textBox.innerHTML = "";
+
+  console.log("reading all from: " + typeof(docarr));
+  for(var i = 0; i < docarr.length; i++)
+  {
+    console.log(i);
+    textBox.innerHTML += "<p>" + docarr[i] + "</p>";
+  }
+    
+  window.scrollTo(0, document.body.scrollHeight);
+
+  //socket.emit("loadMessages");
 }
 
 function loadMessagesBefore()

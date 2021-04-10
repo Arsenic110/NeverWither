@@ -1,6 +1,5 @@
-//here goes any requires
 
-//class definition
+
 class Subsystem 
 {
     //one thing I hate about JS classes is that the variables are never declared and are referenced only inside of functions.
@@ -10,11 +9,14 @@ class Subsystem
     {                                                   //static WriteToConsole = function(text) 
         console.log(text);                              //but something tells me thats even worse
     }
+
+    //really basic snowflake.. basically just Unix timestamp.
+    
+
 }
 
-//holy grail of modules
 module.exports = 
 { 
-//export this: as that
+//variable name: variable value
     Subsystem: Subsystem
 }
