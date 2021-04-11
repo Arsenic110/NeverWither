@@ -18,21 +18,14 @@ function init()
   textBox = document.querySelector("#textBox");
   inputBox = document.querySelector("#chat-input-box");
 
-  
-
   sendButton.addEventListener("click", sendMessage);
   loadButton.addEventListener("click", () => {socket.emit("readAll")});
   inputBox.addEventListener("keyup", function(e){if (e.keyCode === 13) {e.preventDefault(); sendButton.click();}});
-
-  //db.collection(collectionName).onSnapshot(loadMessages);
-  document.querySelector("#nameDialog").style.display = "none";
-  //username = "DEBUG";
-  //document.querySelector("#nameInput").addEventListener("keyup", function(e){if (e.keyCode === 13) {e.preventDefault(); setName();}});
-
+  document.querySelector("#nameInput").addEventListener("keyup", function(e){if (e.keyCode === 13) {e.preventDefault(); setName();}});
+  //document.querySelector("#nameDialog").style.display = "none";
 
   socket = io.connect(window.location.href);
   socket.emit("readAll");
-
 
   socket.on("newMessage", loadMessage);
   socket.on("readAll", loadMessages);
@@ -49,7 +42,7 @@ function sendMessage()
 
   const messageObject = {
     author: username,
-    contents: sanitizeString(message)
+    contents: message
   }
 
   socket.emit("sendMessage", messageObject);
@@ -76,10 +69,9 @@ function loadMessages(docarr)
 {
   textBox.innerHTML = "";
 
-  console.log("reading all from: " + typeof(docarr));
+  //console.log("reading all from: " + typeof(docarr));
   for(var i = 0; i < docarr.length; i++)
   {
-    console.log(i);
     textBox.innerHTML += "<p>" + docarr[i] + "</p>";
   }
     
