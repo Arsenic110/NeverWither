@@ -2,12 +2,8 @@ const http = require("http");
 const fs = require("fs").promises;
 const express = require("express");
 const socketio = require("socket.io");
-const mongodb = require("mongodb");
 const config = require("./config");
-
-//const mongoClient = mongodb.MongoClient;
-//const mongodbUrl = config.database.hostname;
-//const mongoose = require("mongoose");
+const sanitize = require("sanitize-html");
 
 const database = require("./database");
 
@@ -17,8 +13,6 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
-//Make sure to add the class name to simplify syntax.
-//const Subsystem = require("./subsystem").Subsystem;
 
 init();
 
@@ -31,7 +25,7 @@ function init()
     //register the request handler
     app.use(requestListener);
     
-    //register io connections
+    //register io connections, callback to the function that handles client -> server and back
     io.on("connection", registerSockets);
 
     //server listen on port
@@ -43,16 +37,19 @@ function init()
 
 function requestListener(req, res)
 {
+    //static serving somehow doesnt working. dont look at me, theres at least 3 different ways to start a node server and 
+    //every tutorial uses a different one 
     var furl = translateUrl(req.url);
 
-    //serve static files
+    //serve 'static' files
     fs.readFile(__dirname + "/.." + furl).then((contents) =>
     {
-        //header for content type
-        //res.setHeader('Content-Type', 'text/html'); //be cheese, dont declare header like a chad
+        //ideally you declare header for content type, since our content changes i cbf to implement this
+        //res.setHeader('Content-Type', 'text/html');
 
         //response code
         res.writeHead(200);
+        
         //the content
         res.end(contents);
     }).catch(err => console.error(err));
@@ -80,31 +77,35 @@ function registerSockets(Socket)
     //register messages from the client
     Socket.on("sendMessage", (data) =>
     {
-        //TODO: Implement Database + Client Echo
-        console.log(`Client sent: ${data.author} > ${data.contents}`);
+        //sanitize the inputs!
+        var author = sanitize(data.author);
+        var contents = sanitize(data.contents);
 
-        database.createMessage(data.contents, data.author);
+        //send the message to the database... takes a few miliseconds to read it back, though, so
+        database.createMessage(contents, author);
 
-        io.emit("newMessage", `${data.author} > ${data.contents}`);
+        //we re-emit what we plan to save to the database!
+        io.emit("newMessage", `${author} > ${contents}`);
     });
 
+    //read the last 100 messages and send them to the client as an array of pre-made strings 
+    //arguably though this logic should be client side to free up the server. maybe.
     Socket.on("readAll", () =>
     {
         database.readMessages((err, m) => 
         {
             if(err) throw err;
             var mArr = [];
-            //console.log(m.length + " " + typeof(m));
 
+            //reverse because the last 100 messages are ordered from latest -> oldest
             m = m.reverse();
 
             for (var i = 0; i < m.length; i++)
             {
-                //console.log("Inside the loop but no worky: " + i);
-                //console.log(`Pushing ${m[i].author} > ${m[i].contents}`);
                 mArr.push(`${m[i].author} > ${m[i].contents}`);
             }
 
+            //dump it  all
             Socket.emit("readAll", mArr);
         });
     });

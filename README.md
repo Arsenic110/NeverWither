@@ -1,8 +1,7 @@
-# Firebase + WebRTC Codelab
-### Full code solution can be found under the branch: _solution_
-This is the GitHub repo for the FirebaseRTC codelab. This will teach you how 
-to use Firebase Cloud Firestore for signalling in a WebRTC video chat application.
+# NeverWither Chat App
 
-The solution to this codelab can be seen in the _solution_ branch.
+This is the GitHub repo for the NeverWither online chat application.
+It is a Node.JS server with Mongoose + mongoDB integration, and because of this the chat messages are not ephemeral, but are saved dynamically on the database.
+Under the GNU General Public License.
 
-See http://webrtc.org for details.
+Might eventually host somewhere other than my computer and laptop, kek

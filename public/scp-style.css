@@ -195,12 +195,12 @@ img
 .input-box
 {
     color:#fc0;
-    font-size:1.4rem;
     text-shadow:0 0 1ex rgba(255,204,0,.5),0 0 10px rgba(255,176,0,.6);
     min-width: 50vw;
-    min-height: 5vh;
-    border: solid 5px #ffcc00;
-    padding: 9px;
+    font-weight: 700;
+    border: solid 3px;
+    font-size:1.4rem;
+    padding: 1rem;
     background-color: black;
 }
 

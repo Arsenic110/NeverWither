@@ -65,11 +65,6 @@ class Database
             });
     }
 
-    // readMessage(callback, snowflake)
-    // {
-    //     messageSchema.findOne({snowflake:}).sort({_id:1}).exec((err, res) => { if(err) callback(err, null); else callback(null, res);});
-    // }
-
     updateMessage(snowflake)
     {
         throw new Error("NotImplementedException");
@@ -78,6 +73,11 @@ class Database
     deleteMessage(snowflake)
     {
         throw new Error("NotImplementedException");
+    }
+
+    dropMessages()
+    {
+        messageSchema.collection.drop();
     }
 
 

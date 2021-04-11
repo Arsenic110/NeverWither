@@ -18,11 +18,15 @@ function init()
   textBox = document.querySelector("#textBox");
   inputBox = document.querySelector("#chat-input-box");
 
+  
+
   sendButton.addEventListener("click", sendMessage);
   loadButton.addEventListener("click", () => {socket.emit("readAll")});
   inputBox.addEventListener("keyup", function(e){if (e.keyCode === 13) {e.preventDefault(); sendButton.click();}});
   document.querySelector("#nameInput").addEventListener("keyup", function(e){if (e.keyCode === 13) {e.preventDefault(); setName();}});
   //document.querySelector("#nameDialog").style.display = "none";
+
+  inputBox.disabled = true;
 
   socket = io.connect(window.location.href);
   socket.emit("readAll");
@@ -34,8 +38,7 @@ function init()
 
 function sendMessage()
 {
-  let form = document.querySelector("#chat-input-box");
-  let message = form.value;
+  let message = inputBox.value;
 
   if(message == "")
     return;
@@ -47,7 +50,7 @@ function sendMessage()
 
   socket.emit("sendMessage", messageObject);
 
-  form.value = "";
+  inputBox.value = "";
 }
 
 function sendMessageTest(msg)
@@ -109,5 +112,7 @@ function setName()
   {
     username = sanitizeString(locname);
     document.querySelector("#nameDialog").style.display = "none";
+    inputBox.disabled = false;
   }
+  
 }
