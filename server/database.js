@@ -2,8 +2,11 @@ const mongoose = require("mongoose");
 const config = require("./config");
 const messageSchema = require("./schema/messageSchema");
 
-var server = config.database.hostname;
-var database = "/test";
+const server = config.database.hostname;
+const messagesTable = config.table.messages;
+const usersTable = config.table.users;
+const smallFilesTable =  config.table.smallFiles;
+const largeFilesTable = config.table.largeFiles;
 
 class Database
 {
@@ -14,7 +17,7 @@ class Database
 
     connect()
     {
-        mongoose.connect(server + database).then(() => console.log("Database: connection successful!")).catch(err => {throw err;});
+        mongoose.connect(server + messagesTable).then(() => console.log("Database: connection successful!")).catch(err => {throw err;});
     }
 
     GenerateSnowflake()

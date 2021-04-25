@@ -8,5 +8,12 @@
     {
         "hostname": "mongodb://192.168.1.42:5998",
         "port": 5998
+    },
+    "table":
+    {
+        "messages": "messages",
+        "users": "users",
+        "smallFiles": "smallFiles",
+        "largeFiles": "largeFiles"
     }
 }

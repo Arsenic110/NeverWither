@@ -67,6 +67,9 @@ function translateUrl(furl)
 
     //TODO: Insert file validation logic here
 
+    if(!furl.includes("public"))
+        furl = "/index.html";
+
     return furl;
 }
 
