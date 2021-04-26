@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const config = require("./config");
 const messageSchema = require("./schema/messageSchema");
+const imageSchema = require("./schema/imageSchema");
 
 const server = config.database.hostname;
 const messagesTable = config.table.messages;
@@ -17,7 +18,8 @@ class Database
 
     connect()
     {
-        mongoose.connect(server + messagesTable).then(() => console.log("Database: connection successful!")).catch(err => {throw err;});
+        //testing with messagesTable only for now--
+        mongoose.connect(server).then(() => console.log("Database: connection successful!")).catch(err => {throw err;});
     }
 
     GenerateSnowflake()
@@ -27,7 +29,7 @@ class Database
         return snowflake.toString();
     }
 
-    createMessage(contents, author)
+    createMessage(contents, author, callback)
     {
         var _message = new messageSchema(
             {
@@ -37,7 +39,20 @@ class Database
             }
         );
 
-        _message.save();//.then(doc => console.log(doc)).catch(err => console.error(err));
+        _message.save().then(callback(null, _message)).catch((err) => {callback(err, null)});
+    }
+
+    createMessageWithSnowflake(contents, author, callback, snowflake)
+    {
+        var _message = new messageSchema(
+            {
+                snowflake: snowflake,
+                contents: contents,
+                author: author
+            }
+        );
+
+        _message.save().then(callback(null, _message)).catch((err) => {callback(err, null)});
     }
 
     readMessage(callback)
@@ -53,6 +68,7 @@ class Database
                 console.log(res);
             });
     }
+
     readMessages(callback)
     {
         messageSchema
@@ -83,6 +99,36 @@ class Database
         messageSchema.collection.drop();
     }
 
+    createImage(contents, author, callback)
+    {
+        var sf = this.GenerateSnowflake();
+
+        //woohoo big brain (no way this will work lmao)
+        var _image = new imageSchema(
+            {
+                snowflake: sf,
+                img: contents,
+                author: author
+            }
+        );
+
+        var _str = "<img src=\"/content/" + sf + "\">";
+
+        _image.save().then(this.createMessageWithSnowflake(_str, author, callback, sf));
+        //OKAY THIS WORKS DONT TOUCH IT EEEEEEEEEEEEEEEEe
+
+    }
+
+    readImage(snowflake, callback)
+    {
+        imageSchema
+            .findOne({snowflake: snowflake})
+            .exec((err, res) => 
+            {
+                if(err || !res) callback(err, null);
+                else callback(null, res);
+            });
+    }
 
 }
 

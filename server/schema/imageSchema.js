@@ -1,13 +1,10 @@
 const mongoose = require("mongoose");
+const config = require("../config");
 
 const imageSchema = new mongoose.Schema(
 {
     snowflake: String,
-    img:
-    {
-        data: Buffer,
-        contentType: String
-    },
+    img: Buffer,
     author: String
 });
 

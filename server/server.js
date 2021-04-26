@@ -33,26 +33,52 @@ function init()
     {
         console.log(`Server running at http://${hostname}:${port}/`);
     });
+
+    //database.readImage("1619468436214", (err, res) => {if(err) throw err; console.log(res)});
 }
 
 function requestListener(req, res)
 {
-    //static serving somehow doesnt working. dont look at me, theres at least 3 different ways to start a node server and 
+    //static serving somehow doesnt work. dont look at me, theres at least 3 different ways to start a node server and 
     //every tutorial uses a different one 
     var furl = translateUrl(req.url);
 
-    //serve 'static' files
-    fs.readFile(__dirname + "/.." + furl).then((contents) =>
+    if(furl.split("/")[1].includes("content"))
     {
-        //ideally you declare header for content type, since our content changes i cbf to implement this
-        //res.setHeader('Content-Type', 'text/html');
+        //we got ourselves a CDN query my dudes 
+        var imgSnowflake = furl.split("/")[2];
 
-        //response code
-        res.writeHead(200);
-        
-        //the content
-        res.end(contents);
-    }).catch(err => console.error(err));
+        database.readImage(imgSnowflake, (err, ires) => 
+        {
+            if(err) throw err; 
+            else if (ires)
+            {
+                //console.log(err, ires);
+                res.writeHead(200, {'Content-Type': 'image/png', 'Content-Length': ires.img.length});
+
+                res.end(ires.img);
+            }
+            else
+            res.end("error");
+        });
+    }
+    else
+    {
+        //else we dont
+
+        //serve 'static' files
+        fs.readFile(__dirname + "/.." + furl).then((contents) =>
+        {
+            //ideally you declare header for content type, since our content changes i cbf to implement this
+            //res.setHeader('Content-Type', 'text/html');
+
+            //response code
+            res.writeHead(200);
+            
+            //the content
+            res.end(contents);
+        }).catch(err => console.error(err));
+    }
 }
 
 function Suntier()
@@ -62,15 +88,21 @@ function Suntier()
 
 function translateUrl(furl)
 {
-    if(furl == "/")
-        furl = "/index.html";
+    //console.log(furl);
+
+    var turl = "/index.html";
+
+    
 
     //TODO: Insert file validation logic here
 
-    if(!furl.includes("public"))
-        furl = "/index.html";
+    if(furl.includes("public") || furl.includes("content"))
+        turl = furl;
 
-    return furl;
+    if(furl == "/")
+        turl = "/index.html";
+
+    return turl;
 }
 
 function registerSockets(Socket)
@@ -85,10 +117,7 @@ function registerSockets(Socket)
         var contents = sanitize(data.contents);
 
         //send the message to the database... takes a few miliseconds to read it back, though, so
-        database.createMessage(contents, author);
-
-        //we re-emit what we plan to save to the database!
-        io.emit("newMessage", `${author} > ${contents}`);
+        database.createMessage(contents, author, messageCallback);
     });
 
     //read the last 100 messages and send them to the client as an array of pre-made strings 
@@ -114,6 +143,19 @@ function registerSockets(Socket)
     });
 
 
+    Socket.on("sendImage", (imageObject) =>
+    {
+        //console.log("server received something, here test: [TEST REMOVED FOR SANITY REASONS]");
+        database.createImage(imageObject.data, imageObject.author, messageCallback);
+    });
+
+
+}
+
+function messageCallback(err, res)
+{
+    if(err) console.error(err); else
+    io.emit("newMessage", `${res.author} > ${res.contents}`);
 }
 
 //for future exports
