@@ -1,0 +1,84 @@
+
+html
+{
+    height: 100%;
+    width: 100%;
+    background-image:  url("../content/icons/nanotrasen.svg"), linear-gradient(to bottom, #292929, #202020);
+    background-repeat: no-repeat;
+    background-size: 30%, auto;
+    background-position: 50%;
+    background-attachment: fixed;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    font-size: 85%;
+}
+
+.btn
+{
+    border-radius: 4px;
+    color:white;
+    padding: 3px;
+    margin: 1px;
+}
+.btn-active
+{
+    border: 2px solid #161616;
+    background-color: #40628a;
+}
+.btn-active:active
+{
+    border: 2px solid #243c57;
+}
+.btn-inactive
+{
+    border: 2px solid transparent;
+    background: none;
+}
+.btn-inactive:hover
+{
+    border: 2px solid #243c57;
+}
+.btn-inactive:active
+{
+    border: 2px solid #243c57;
+    background-color: #40628a;
+}
+.text-orange
+{
+    margin: 0px;
+    color: #e8bf84;
+}
+.text-orange-heavy
+{
+    color: #cd6500;
+}
+.text-grey
+{
+    color: #999999;
+}
+.list-table
+{
+    border: 1px solid #40628a;
+    padding: 3px;
+}
+.list-table td
+{
+    background-color: rgb(0, 127, 71);
+    padding: 5px;
+}
+.center-horizontal
+{
+    width: 50%;
+    margin: auto;
+}
+.center-text
+{
+    text-align: center;
+}
+.hazard
+{
+    background: repeating-linear-gradient(-45deg, #e9c183 0px 10px, #cfa668 10px 20px);
+    color: black;
+    padding: 4px;
+
+}
