@@ -9,27 +9,23 @@
     <link rel="stylesheet" type="text/css" href="public/icons.css">
 
     <link rel="stylesheet" type="text/css" href="public/nt.css">
-
-
-    <!-- <link type="text/css" rel="stylesheet" href="public/scp-style.css"> -->
 </head>
 <body>
 
-    <h1 class="error">Welcome to NeverWither! <i class="icon icon-chat"></i></h1>
+    <h1 class="text-orange">Welcome to NeverWither! <i class="icon icon-chat"></i></h1>
 
     <div id="textBox">
         
     </div>
-
-     <dialog open id="nameDialog">
+     <dialog open id="nameDialog" class="center-horizontal">
         <p>Input your Name: </p>
         <input type="text" class="input input-box" id="nameInput">
     </dialog> 
 
     <div class="" id="chat-input-div">
-        <input type="text" autocomplete="off" class="input input-box" id="chat-input-box">
-        <button class="btn btn-active" id="saveButton">Send!</button>
-        <button class="btn btn-active" id="loadButton">Load...</button>
+        <input type="text" autocomplete="off" class="input input-box" id="chat-input-box" placeholder="Write Message..">
+        <button class="btn btn-active" id="saveButton"><i class="icon icon-paper-plane"></i> Send!</button>
+        <button class="btn btn-active" id="loadButton"><i class="icon icon-server"></i> Load...</button>
     </div>
 
     <script src="socket.io/socket.io.js"></script>

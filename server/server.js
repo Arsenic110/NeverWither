@@ -134,7 +134,14 @@ function registerSockets(Socket)
 
             for (var i = 0; i < m.length; i++)
             {
-                mArr.push(`${m[i].author} > ${m[i].contents}`);
+                var _message = 
+                {
+                    author: m[i].author,
+                    contents: m[i].contents,
+                    id: m[i].snowflake
+                }
+                //console.log(_message);
+                mArr.push(_message);
             }
 
             //dump it  all
@@ -155,7 +162,17 @@ function registerSockets(Socket)
 function messageCallback(err, res)
 {
     if(err) console.error(err); else
-    io.emit("newMessage", `${res.author} > ${res.contents}`);
+    {
+        var _message = 
+        {
+            author: res.author,
+            contents: res.contents,
+            id: res.snowflake
+        }
+        //console.log(_message);
+        io.emit("newMessage", _message);
+    }
+    
 }
 
 //for future exports

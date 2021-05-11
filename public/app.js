@@ -78,9 +78,11 @@ function sendMessageTest(msg)
 function loadMessage(doc)
 {
   //textBox.innerHTML = "";
+
  
-  textBox.innerHTML += "<p>" + doc + "</p>";
-  window.scrollTo(0, document.body.scrollHeight);
+  textBox.innerHTML += 
+  `<p><span class="text-dark">[${new Date(doc.id * 1).toUTCString()}]</span> <span class="text-orange">&lt;${doc.author}&gt;</span> ${doc.contents} </p>`;
+  onContentUpdate();
 
   //socket.emit("loadMessages");
 }
@@ -89,10 +91,13 @@ function loadMessages(docarr)
 {
   textBox.innerHTML = "";
 
+  
+
   //console.log("reading all from: " + typeof(docarr));
   for(var i = 0; i < docarr.length; i++)
   {
-    textBox.innerHTML += "<p>" + docarr[i] + "</p>";
+    textBox.innerHTML += 
+    `<p><span class="text-dark">[${new Date(docarr[i].id * 1).toUTCString()}]</span> <span class="text-orange">&lt;${docarr[i].author}&gt;</span> ${docarr[i].contents} </p>`;
   }
     
   window.scrollTo(0, document.body.scrollHeight);
@@ -132,4 +137,9 @@ function setName()
     inputBox.disabled = false;
   }
   
+}
+
+function onContentUpdate()
+{
+  window.scrollTo(0, document.body.scrollHeight);
 }

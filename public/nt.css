@@ -1,4 +1,10 @@
 
+:root
+{
+    --blue-color: #40628a;
+    --blue-border: #243c57;
+}
+
 html
 {
     height: 100%;
@@ -8,26 +14,77 @@ html
     background-size: 30%, auto;
     background-position: 50%;
     background-attachment: fixed;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: white;
-    font-size: 85%;
+    font-family: 'Ubuntu', Tahoma, Geneva, Verdana, sans-serif;
+ 
+}
+
+dialog 
+{
+    position:fixed;
+    z-index: 21000;
+    top:50%;
+    border-radius: 6px;
+    color:black !important;
+    border-color: var(--blue-color);
+}
+
+input
+{
+    border-radius: 4px;
+    min-height: 1rem;
+    padding: 0.5rem;
+    border-color: var(--blue-color);
+}
+
+#chat-input-box
+{
+    min-width: 90%;
+    display:table-cell;
+}
+
+#chat-input-div
+{
+    display: table;
+    width: 100%;
+    max-width: 100%;
+}
+
+
+
+#chat-input-box .btn
+{
+    display: table-cell;
+    width: 10%;
+    margin: auto;
+}
+
+#textBox
+{
+    color: rgb(200, 200, 200);
+}
+
+.text-dark
+{
+    color: rgb(110, 110, 110);
 }
 
 .btn
 {
     border-radius: 4px;
     color:white;
-    padding: 3px;
-    margin: 1px;
+    padding: 0.5rem;
+    max-width: 10%;
+    max-height: 4rem;
+    
 }
 .btn-active
 {
     border: 2px solid #161616;
-    background-color: #40628a;
+    background-color: var(--blue-color);
 }
 .btn-active:active
 {
-    border: 2px solid #243c57;
+    border: 2px solid var(--blue-border);
 }
 .btn-inactive
 {
@@ -36,12 +93,12 @@ html
 }
 .btn-inactive:hover
 {
-    border: 2px solid #243c57;
+    border: 2px solid var(--blue-border);
 }
 .btn-inactive:active
 {
-    border: 2px solid #243c57;
-    background-color: #40628a;
+    border: 2px solid var(--blue-border);
+    background-color: var(--blue-color);
 }
 .text-orange
 {
@@ -58,7 +115,7 @@ html
 }
 .list-table
 {
-    border: 1px solid #40628a;
+    border: 1px solid var(--blue-color);
     padding: 3px;
 }
 .list-table td
@@ -68,7 +125,6 @@ html
 }
 .center-horizontal
 {
-    width: 50%;
     margin: auto;
 }
 .center-text
